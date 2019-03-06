@@ -1,14 +1,308 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Page Title</title>
+    <title>ID3 Algorithm</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
-    <script src="main.js"></script>
+
 </head>
+
 <body>
-    
+    <h1>ID3 Algorithm</h1>
+    <div class="table-wrapper">
+        <div class="table-title">
+            <div class="row">
+                <div class="col-sm-8">
+                    <h2>Table
+                        <b>Details</b>
+                    </h2>
+                </div>
+                <div class="col-sm-4">
+                    <button type="button" class="btn btn-info add-new">
+                        <i class="fa fa-plus"></i> Add New</button>
+                </div>
+            </div>
+        </div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>TiempoExterior</th>
+                    <th>Temperatura</th>
+                    <th>Humedad</th>
+                    <th>Viento</th>
+                    <th class="decisionColumn">Jugar</th>
+                    <th class="options">Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>soleado</td>
+                    <td>caluroso</td>
+                    <td>alta</td>
+                    <td>falso</td>
+                    <td>no</td>
+                    <td class="options">
+                        <a class="add" title="" data-toggle="tooltip" data-original-title="Add">
+                            <i class="material-icons"></i>
+                        </a>
+                        <a class="edit" title="" data-toggle="tooltip" data-original-title="Edit">
+                            <i class="material-icons"></i>
+                        </a>
+                        <a class="delete" title="" data-toggle="tooltip" data-original-title="Delete">
+                            <i class="material-icons"></i>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>soleado</td>
+                    <td>caluroso</td>
+                    <td>alta</td>
+                    <td>verdad</td>
+                    <td>no</td>
+                    <td class="options">
+                        <a class="add" title="" data-toggle="tooltip" data-original-title="Add">
+                            <i class="material-icons"></i>
+                        </a>
+                        <a class="edit" title="" data-toggle="tooltip" data-original-title="Edit">
+                            <i class="material-icons"></i>
+                        </a>
+                        <a class="delete" title="" data-toggle="tooltip" data-original-title="Delete">
+                            <i class="material-icons"></i>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>nublado</td>
+                    <td>caluroso</td>
+                    <td>alta</td>
+                    <td>falso</td>
+                    <td>si</td>
+                    <td class="options">
+                        <a class="add" title="" data-toggle="tooltip" data-original-title="Add">
+                            <i class="material-icons"></i>
+                        </a>
+                        <a class="edit" title="" data-toggle="tooltip" data-original-title="Edit">
+                            <i class="material-icons"></i>
+                        </a>
+                        <a class="delete" title="" data-toggle="tooltip" data-original-title="Delete">
+                            <i class="material-icons"></i>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>lluvioso</td>
+                    <td>templado</td>
+                    <td>alta</td>
+                    <td>falso</td>
+                    <td>si</td>
+                    <td class="options">
+                        <a class="add" title="" data-toggle="tooltip" data-original-title="Add">
+                            <i class="material-icons"></i>
+                        </a>
+                        <a class="edit" title="" data-toggle="tooltip" data-original-title="Edit">
+                            <i class="material-icons"></i>
+                        </a>
+                        <a class="delete" title="" data-toggle="tooltip" data-original-title="Delete">
+                            <i class="material-icons"></i>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>lluvioso</td>
+                    <td>frio</td>
+                    <td>normal</td>
+                    <td>falso</td>
+                    <td>si</td>
+                    <td class="options">
+                        <a class="add" title="" data-toggle="tooltip" data-original-title="Add">
+                            <i class="material-icons"></i>
+                        </a>
+                        <a class="edit" title="" data-toggle="tooltip" data-original-title="Edit">
+                            <i class="material-icons"></i>
+                        </a>
+                        <a class="delete" title="" data-toggle="tooltip" data-original-title="Delete">
+                            <i class="material-icons"></i>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>lluvioso</td>
+                    <td>frio</td>
+                    <td>normal</td>
+                    <td>verdad</td>
+                    <td>no</td>
+                    <td class="options">
+                        <a class="add" title="" data-toggle="tooltip" data-original-title="Add">
+                            <i class="material-icons"></i>
+                        </a>
+                        <a class="edit" title="" data-toggle="tooltip" data-original-title="Edit">
+                            <i class="material-icons"></i>
+                        </a>
+                        <a class="delete" title="" data-toggle="tooltip" data-original-title="Delete">
+                            <i class="material-icons"></i>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>nublado</td>
+                    <td>frio</td>
+                    <td>normal</td>
+                    <td>verdad</td>
+                    <td>si</td>
+                    <td class="options">
+                        <a class="add" title="" data-toggle="tooltip" data-original-title="Add">
+                            <i class="material-icons"></i>
+                        </a>
+                        <a class="edit" title="" data-toggle="tooltip" data-original-title="Edit">
+                            <i class="material-icons"></i>
+                        </a>
+                        <a class="delete" title="" data-toggle="tooltip" data-original-title="Delete">
+                            <i class="material-icons"></i>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>soleado</td>
+                    <td>templado</td>
+                    <td>alta</td>
+                    <td>falso</td>
+                    <td>no</td>
+                    <td class="options">
+                        <a class="add" title="" data-toggle="tooltip" data-original-title="Add">
+                            <i class="material-icons"></i>
+                        </a>
+                        <a class="edit" title="" data-toggle="tooltip" data-original-title="Edit">
+                            <i class="material-icons"></i>
+                        </a>
+                        <a class="delete" title="" data-toggle="tooltip" data-original-title="Delete">
+                            <i class="material-icons"></i>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>soleado</td>
+                    <td>frio</td>
+                    <td>normal</td>
+                    <td>falso</td>
+                    <td>si</td>
+                    <td class="options">
+                        <a class="add" title="" data-toggle="tooltip" data-original-title="Add">
+                            <i class="material-icons"></i>
+                        </a>
+                        <a class="edit" title="" data-toggle="tooltip" data-original-title="Edit">
+                            <i class="material-icons"></i>
+                        </a>
+                        <a class="delete" title="" data-toggle="tooltip" data-original-title="Delete">
+                            <i class="material-icons"></i>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>lluvioso</td>
+                    <td>templado</td>
+                    <td>normal</td>
+                    <td>falso</td>
+                    <td>si</td>
+                    <td class="options">
+                        <a class="add" title="" data-toggle="tooltip" data-original-title="Add">
+                            <i class="material-icons"></i>
+                        </a>
+                        <a class="edit" title="" data-toggle="tooltip" data-original-title="Edit">
+                            <i class="material-icons"></i>
+                        </a>
+                        <a class="delete" title="" data-toggle="tooltip" data-original-title="Delete">
+                            <i class="material-icons"></i>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>soleado</td>
+                    <td>templado</td>
+                    <td>normal</td>
+                    <td>verdad</td>
+                    <td>si</td>
+                    <td class="options">
+                        <a class="add" title="" data-toggle="tooltip" data-original-title="Add">
+                            <i class="material-icons"></i>
+                        </a>
+                        <a class="edit" title="" data-toggle="tooltip" data-original-title="Edit">
+                            <i class="material-icons"></i>
+                        </a>
+                        <a class="delete" title="" data-toggle="tooltip" data-original-title="Delete">
+                            <i class="material-icons"></i>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>nublado</td>
+                    <td>templado</td>
+                    <td>alta</td>
+                    <td>verdad</td>
+                    <td>si</td>
+                    <td class="options">
+                        <a class="add" title="" data-toggle="tooltip" data-original-title="Add">
+                            <i class="material-icons"></i>
+                        </a>
+                        <a class="edit" title="" data-toggle="tooltip" data-original-title="Edit">
+                            <i class="material-icons"></i>
+                        </a>
+                        <a class="delete" title="" data-toggle="tooltip" data-original-title="Delete">
+                            <i class="material-icons"></i>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>nublado</td>
+                    <td>caluroso</td>
+                    <td>normal</td>
+                    <td>falso</td>
+                    <td>si</td>
+                    <td class="options">
+                        <a class="add" title="" data-toggle="tooltip" data-original-title="Add">
+                            <i class="material-icons"></i>
+                        </a>
+                        <a class="edit" title="" data-toggle="tooltip" data-original-title="Edit">
+                            <i class="material-icons"></i>
+                        </a>
+                        <a class="delete" title="" data-toggle="tooltip" data-original-title="Delete">
+                            <i class="material-icons"></i>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>lluvioso</td>
+                    <td>templado</td>
+                    <td>alta</td>
+                    <td>verdad</td>
+                    <td>no</td>
+                    <td class="options">
+                        <a class="add" title="" data-toggle="tooltip" data-original-title="Add">
+                            <i class="material-icons"></i>
+                        </a>
+                        <a class="edit" title="" data-toggle="tooltip" data-original-title="Edit">
+                            <i class="material-icons"></i>
+                        </a>
+                        <a class="delete" title="" data-toggle="tooltip" data-original-title="Delete">
+                            <i class="material-icons"></i>
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <script src="js/ID3.js"></script>
+    <script src="main.js"></script>
 </body>
+
 </html>
