@@ -65,17 +65,24 @@ $(document).ready(function () {
 		let e = $(this);
 		let values = [];
 		let vElms = e.find("td");
+		// Just afront every column of each row
 		for (let j = 0; j < (vElms.length - SKIPCOLUMNS); j++) {
 			let v = $(vElms[j]).text();
+			// Get the info about this column
 			let tHeader = tHeaders[Object.getOwnPropertyNames(tHeaders)[j]];
+			// Get column values
 			let tHeaderValues = Object.getOwnPropertyNames(tHeader.values);
 			if (!tHeaderValues.includes(v)) {
+				// If the column doesn't contains this value, lets add it
 				tHeader.values[v] = { count : 1, decisionValues: {}};
 			} else {
+				// Otherwise just sum up its counter
 				tHeader.values[v].count++;
 			}
+
+			// Increase the final counter (N)
 			tHeader.sumCountValues++;
-			values.push(v);
+			values.push(v); // Add column values (making the grid of values)
 
 			if(j == vElms.length - SKIPCOLUMNS - 1){
 				// Last column, decision column
