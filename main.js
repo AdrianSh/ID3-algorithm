@@ -50,57 +50,62 @@ $(document).ready(function () {
 		$(".add-new").removeAttr("disabled");
 	});
 
-	// ######################################
-	// ### From here is the ID3             #
-	// ######################################
-	var tHeaders = {};
-	let SKIPCOLUMNS = 1;
+	$(".run-id3").click(function () {
 
-	let tHeadersElms = $("table thead").find("th");
-	for (let i = 0; i < (tHeadersElms.length - SKIPCOLUMNS); i++)
-		tHeaders[$(tHeadersElms[i]).text()] = { index: i, values: {}, sumCountValues: 0};
+		// ######################################
+		// ### From here is the ID3             #
+		// ######################################
+		var tHeaders = {};
+		let SKIPCOLUMNS = 1;
 
-	var tValues = [];
-	$("table tbody").find("tr").each(function (i) {
-		let e = $(this);
-		let values = [];
-		let vElms = e.find("td");
-		// Just afront every column of each row
-		for (let j = 0; j < (vElms.length - SKIPCOLUMNS); j++) {
-			let v = $(vElms[j]).text();
-			// Get the info about this column
-			let tHeader = tHeaders[Object.getOwnPropertyNames(tHeaders)[j]];
-			// Get column values
-			let tHeaderValues = Object.getOwnPropertyNames(tHeader.values);
-			if (!tHeaderValues.includes(v)) {
-				// If the column doesn't contains this value, lets add it
-				tHeader.values[v] = { count : 1, decisionValues: {}};
-			} else {
-				// Otherwise just sum up its counter
-				tHeader.values[v].count++;
+		let tHeadersElms = $("table thead").find("th");
+		for (let i = 0; i < (tHeadersElms.length - SKIPCOLUMNS); i++)
+			tHeaders[$(tHeadersElms[i]).text()] = { index: i, values: {}, sumCountValues: 0 };
+
+		var tValues = [];
+		$("table tbody").find("tr").each(function (i) {
+			let e = $(this);
+			let values = [];
+			let vElms = e.find("td");
+			// Just afront every column of each row
+			for (let j = 0; j < (vElms.length - SKIPCOLUMNS); j++) {
+				let v = $(vElms[j]).text(); // Column value
+				// Get the info about this column
+				let tHeader = tHeaders[Object.getOwnPropertyNames(tHeaders)[j]];
+				// Get column values for checking if the value is already in
+				let tHeaderValues = Object.getOwnPropertyNames(tHeader.values);
+				if (!tHeaderValues.includes(v)) {
+					// if the column doesn't contains this value, lets add it
+					tHeader.values[v] = { count: 1, decisionValues: {} };
+				} else {
+					// Otherwise just sum up its counter
+					tHeader.values[v].count++;
+				}
+
+				// Increase the final counter (N)
+				tHeader.sumCountValues++;
+				values.push(v); // Add column values (making the grid of values)
+
+				if (j == vElms.length - SKIPCOLUMNS - 1) {
+					// Last column, decision column
+					values.forEach(function (val, k) {
+						tHeader = tHeaders[Object.getOwnPropertyNames(tHeaders)[k]];
+						// If current column contains this decision value
+						if (!Object.getOwnPropertyNames(tHeader.values[val].decisionValues).includes(v))
+							tHeader.values[val].decisionValues[v] = { count: 0 };
+						tHeader.values[val].decisionValues[v].count++;
+
+						// console.log(`Adding the decision value to the column: ${v}`);
+
+					}.bind(this));
+				}
 			}
+			tValues.push(values);
+		});
 
-			// Increase the final counter (N)
-			tHeader.sumCountValues++;
-			values.push(v); // Add column values (making the grid of values)
+		// console.log(tHeaders);
+		// console.log(tValues);
 
-			if(j == vElms.length - SKIPCOLUMNS - 1){
-				// Last column, decision column
-				tHeaders[Object.getOwnPropertyNames(tHeaders)[j]]
-				/**
-				 * COMO RECORREMOS LA MATRIZ POR FILAS Y LUEGO POR COLUMNAS,
-				 * ENTONCES AL LLEVAR A LA COLUMNA DE DECISION, SUMAMOS A LOS VALORES DE CADA ATRIBUTO,
-				 * EL VALOR DE LA DECISION.
-				 * 
-				 * Hay que comprobar si existia el valor sino lo agregamos.
-				 */
-			}
-		}
-		tValues.push(values);
+		var algorithm = new ID3(tHeaders);
 	});
-
-
-
-	console.log(tHeaders);
-	console.log(tValues);
 });
