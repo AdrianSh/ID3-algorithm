@@ -103,9 +103,9 @@ $(document).ready(function () {
 			tValues.push(values);
 		});
 
-		// console.log(tHeaders);
-		// console.log(tValues);
+		console.log(tHeaders);
+		console.log(tValues);
 
-		var algorithm = new ID3(tHeaders);
-	});
+		var algorithm = new ID3(tHeaders, tValues);
+	});	
 });
