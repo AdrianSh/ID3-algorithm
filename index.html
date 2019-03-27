@@ -8,8 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" type="text/css"
-        href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
 
@@ -21,6 +20,34 @@
         <div class="table-title">
             <div class="row">
                 <div id="tree"></div>
+
+                <table id="evalID3" class="table table-bordered">
+                    <thead>
+                        <caption>Evaluate</caption>
+                        <tr>
+                            <th>TiempoExterior</th>
+                            <th>Temperatura</th>
+                            <th>Humedad</th>
+                            <th>Viento</th>
+                            <th class="decisionColumn">Jugar</th>
+                            <th class="options">Options</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td contenteditable="true">soleado</td>
+                            <td contenteditable="true">caluroso</td>
+                            <td contenteditable="true">alta</td>
+                            <td contenteditable="true">falso</td>
+                            <td contenteditable="false">?</td>
+                            <td class="options">
+                                <a class="Play" title="" data-toggle="tooltip" data-original-title="Play">
+                                    <i class="material-icons">&#xE037;</i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
             <div class="row">
                 <div class="col-sm-4">
@@ -38,7 +65,7 @@
                 </div>
             </div>
         </div>
-        <table class="table table-bordered">
+        <table class="id3 table table-bordered">
             <thead>
                 <tr>
                     <th>TiempoExterior</th>

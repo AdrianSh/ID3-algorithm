@@ -25,10 +25,9 @@ class ID3 {
      * @param {*} tValues is an Array which describes a matrix containing the table values
      */
     constructor(tHeaders, tValues) {
-        this.P_VALUE = "si";
-        this.N_VALUE = "no";
         this.tree = [];
         this.id = 0;
+        this.tHeaders = tHeaders;
 
         this.algorithm(tValues, tHeaders);
 
@@ -40,72 +39,90 @@ class ID3 {
                 }
             }
         });
-
-
+        $('#evalID3').show();
     }
 
     algorithm(tValues, tHeaders, parent = '#') {
         try {
+            if (tValues.length <= 1) { // Just a row
+                this.tree.push({ "id": this.id++, "parent": parent, "text": tValues.length > 0 ? tValues[0][tValues[0].length - 1] : 'No values', 'icon': 'glyphicon glyphicon-leaf' });
+                return;
+            }
+
+            if (Object.getOwnPropertyNames(tHeaders).length == 1) { // Just a column (desicion)
+                this.tree.push({ "id": this.id++, "parent": parent, "text": `Conflict: ${tValues}`, 'icon': 'glyphicon glyphicon-leaf' });
+                return;
+            }
+
+            // Dos it contains the same desicion value for all table rows
+            let descValue = tValues[0][tValues[0].length - 1];
+            for (const row of tValues)
+                if (row[tValues[0].length - 1] != descValue) {
+                    descValue = false;
+                    break;
+                }
+            if (descValue) {
+                this.tree.push({ "id": this.id++, "parent": parent, "text": descValue, 'icon': 'glyphicon glyphicon-leaf' });
+                return;
+            }
+
+            // Let's do it:
             let columns = Object.getOwnPropertyNames(tHeaders);
             let columnMeritos = [];
             let decisionValues = this._extractDecisionValues(tHeaders[columns[columns.length - 1]]);
 
-            for (let i = 0; i < columns.length - 1; i++) {
-                // const tHeader = columns[i];
-                // console.log(`Calc merito of the column: ${columns[i]}`);
+            // Calc merito for each column
+            for (let i = 0; i < columns.length - 1; i++)
                 columnMeritos.push(this.merito(tHeaders[columns[i]], decisionValues));
-            }
 
+            // Get the min merito
             let minMerito = columnMeritos.length > 0 ? columnMeritos.reduce((ac, v, v_i) => v < ac ? v : ac) : columnMeritos;
-            // Devuelvo la columna de menor merito        
-            console.log(`columnMeritos:[${columnMeritos}]  minMerito:${minMerito}  min:${columns[columnMeritos.indexOf(minMerito)]}`);
-
-            // Parameters for algorithm
-            var cSelectedColumn = { index: columnMeritos.indexOf(minMerito), name: columns[columnMeritos.indexOf(minMerito)] };
-
-            if (cSelectedColumn.name == undefined) {
-                // Final decision level
-                let txt = `${tValues}`;
-                this.tree.push({ "id": this.id++, "parent": parent, "text": txt.length > 0 ? txt : '?', 'icon': 'glyphicon glyphicon-leaf' });
-                return;
-            }
-
-            // Check if for every values it has already a solution
-            let dscValues = {};
-            decisionValues.forEach(function (v) {
-                dscValues[v] = 0;
-            });
-
+            let cSelectedColumn = { index: columnMeritos.indexOf(minMerito), name: columns[columnMeritos.indexOf(minMerito)] };
+            // console.log(`columnMeritos:[${columnMeritos}]  minMerito:${minMerito}  min:${columns[columnMeritos.indexOf(minMerito)]}`);
             console.log(`cSelectedColumn: ${JSON.stringify(cSelectedColumn)}`);
 
-            for (const value in tHeaders[cSelectedColumn.name].values) {
-                console.log(value);
-                let currDescValues = tHeaders[cSelectedColumn.name].values[value].decisionValues;
-                for (let dscValue in currDescValues) {
-                    dscValues[dscValue] += currDescValues[dscValue].count;
-                }
-            }
-
-            let allValuesWithSameDesicionValue = true, descValue = null;
-            for (let v in dscValues) {
-                if (!descValue) descValue = v;
-                if (dscValues[v] > 0 && descValue != v) allValuesWithSameDesicionValue = false;
-            }
-            if (allValuesWithSameDesicionValue) {
-                console.log(`All values contains the same desicion value: ${descValue}`);
-
-                // Final decision level
-                let txt = `${descValue}`;
-                this.tree.push({ "id": this.id++, "parent": parent, "text": txt.length > 0 ? txt : '?', 'icon': 'glyphicon glyphicon-leaf' });
+            if (cSelectedColumn.name == undefined) {
+                let txt = `${tValues}`; // Final decision level
+                this.tree.push({ "id": this.id++, "parent": parent, "text": txt, 'icon': 'glyphicon glyphicon-leaf' });
                 return;
             }
 
+            /** Check whether the column contains every value and if its desicion is the same for all.
+                // Check if for every values it has already a solution
+                let dscValues = {};
+                decisionValues.forEach(function (v) {
+                    dscValues[v] = 0;
+                });
+
+                for (const value in tHeaders[cSelectedColumn.name].values) {
+                    // console.log(value);
+                    let currDescValues = tHeaders[cSelectedColumn.name].values[value].decisionValues;
+                    for (let dscValue in currDescValues) {
+                        dscValues[dscValue] += currDescValues[dscValue].count;
+                    }
+                }
+
+                let allValuesWithSameDesicionValue = true, descValue = null;
+                for (let v in dscValues) {
+                    if (!descValue) descValue = v;
+                    if (dscValues[v] > 0 && descValue != v) allValuesWithSameDesicionValue = false;
+                }
+                if (allValuesWithSameDesicionValue) {
+                    console.log(`All values contains the same desicion value: ${descValue}`);
+
+                    // Final decision level
+                    let txt = `${descValue}`;
+                    this.tree.push({ "id": this.id++, "parent": parent, "text": txt.length > 0 ? txt : '?', 'icon': 'glyphicon glyphicon-leaf' });
+                    return;
+                }
+            */
+
+            // Add the selected column to the trees
             let id = this.id++;
-            // Add to the tree
             this.tree.push({ "id": id, "parent": parent, "text": cSelectedColumn.name, "icon": "http://jstree.com/tree.png" });
 
+            // Iterate over each column value
             for (const value in tHeaders[cSelectedColumn.name].values) {
-
                 // Add to the tree
                 let vId = this.id++;
                 this.tree.push({ "id": vId, "parent": id, "text": `${cSelectedColumn.name} = ${value}` });
@@ -123,6 +140,7 @@ class ID3 {
                 this._countHeaders(tNextValues, tNextHeaders, columns);
 
                 console.log(`-------------------- NEXT ITERATION ----------- `);
+                console.log(`${cSelectedColumn.name} = ${value}`);
                 console.log(`tNextHeaders:`);
                 console.log(tNextHeaders);
                 console.log(`tNextValues:`);
@@ -136,6 +154,38 @@ class ID3 {
             console.warn(tValues);
             throw e;
         }
+    }
+
+    evaluate(tValues) {
+        console.log('----------------------- EVALUATE ---------------------');
+        console.log(tValues);
+        // console.log(this.tree);
+
+        let i = 1;
+        var column = this._treeSearchBy()[0]; // Root
+        while (i < Object.keys(this.tHeaders).length) {
+            console.log(`Column: ${column.text} ${typeof(this.tHeaders[column.text])}`);
+            if(typeof(this.tHeaders[column.text]) == 'undefined' )
+                return column.text;
+            // console.log(`tHeader: ${this.tHeaders[column.text]}`);
+            let value = tValues[this.tHeaders[column.text].index];
+
+            console.log(`${column.text} = ${value}`);
+            console.warn('Next level');
+            console.log(this._treeSearchBy(column.id));
+            let nodeWithValue = this._treeSearchBy(column.id).find(e => e.text == `${column.text} = ${value}`);
+            if(typeof(nodeWithValue) == 'undefined')
+                return 'Undefined';
+            
+            column = this._treeSearchBy(nodeWithValue.id)[0];
+            i++;
+        }
+
+        return undefined;
+    }
+
+    _treeSearchBy(id = '#', column = 'parent') {
+        return this.tree.filter(e => e[column] == id);
     }
 
     _extractDecisionValues(tHeader) {

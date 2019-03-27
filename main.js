@@ -51,7 +51,6 @@ $(document).ready(function () {
 	});
 
 	$(".run-id3").click(function () {
-
 		// ######################################
 		// ### From here is the ID3             #
 		// ######################################
@@ -63,7 +62,7 @@ $(document).ready(function () {
 			tHeaders[$(tHeadersElms[i]).text()] = { index: i, values: {}, sumCountValues: 0 };
 
 		var tValues = [];
-		$("table tbody").find("tr").each(function (i) {
+		$("table.id3 tbody").find("tr").each(function (i) {
 			let e = $(this);
 			let values = [];
 			let vElms = e.find("td");
@@ -103,9 +102,16 @@ $(document).ready(function () {
 			tValues.push(values);
 		});
 
-		console.log(tHeaders);
-		console.log(tValues);
-
 		var algorithm = new ID3(tHeaders, tValues);
-	});	
+
+		$("#evalID3 .Play").click(function(e){
+			$($('#evalID3 td')[4]).text(algorithm.evaluate([$('#evalID3 td')[0].innerText, $('#evalID3 td')[1].innerText, $('#evalID3 td')[2].innerText, $('#evalID3 td')[3].innerText]));
+		});
+		$(this).off();
+		$(this).click(function () {
+			$('#tree').jstree("open_all");
+		});
+		$(this).text('Open all');
+	});
+	
 });

@@ -117,3 +117,12 @@ table.table th.options {
 table.table td.decisionColumn {
     background-color: #e1ffdf;
 }
+
+#evalID3 {
+    display: none;
+    margin-top: 10px;
+}
+
+#evalID3 .Play {
+    color: green;
+}
