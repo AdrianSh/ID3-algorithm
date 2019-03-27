@@ -111,7 +111,7 @@ $(document).ready(function () {
 		$(this).click(function () {
 			$('#tree').jstree("open_all");
 		});
-		$(this).text('Open all');
+		$(this).text('Open all tree');
 	});
 	
 });
