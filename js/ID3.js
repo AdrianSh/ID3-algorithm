@@ -34,94 +34,107 @@ class ID3 {
 
         var tree = this.tree;
         $('#tree').jstree({
-            'core' : {
-                'data' : function (obj, cb) {
+            'core': {
+                'data': function (obj, cb) {
                     cb.call(this, tree);
                 }
-            }});
+            }
+        });
 
-        
+
     }
 
     algorithm(tValues, tHeaders, parent = '#') {
-        let columns = Object.getOwnPropertyNames(tHeaders);
-        let columnMeritos = [];
-        let decisionValues = this._extractDecisionValues(tHeaders[columns[columns.length - 1]]);
+        try {
+            let columns = Object.getOwnPropertyNames(tHeaders);
+            let columnMeritos = [];
+            let decisionValues = this._extractDecisionValues(tHeaders[columns[columns.length - 1]]);
 
-        for (let i = 0; i < columns.length - 1; i++) {
-            // const tHeader = columns[i];
-            // console.log(`Calc merito of the column: ${columns[i]}`);
-            columnMeritos.push(this.merito(tHeaders[columns[i]], decisionValues));
-        }
-
-        let minMerito = columnMeritos.length > 0 ? columnMeritos.reduce((ac, v, v_i) => v < ac ? v : ac) : columnMeritos;
-        // Devuelvo la columna de menor merito        
-        console.log(`columnMeritos:[${columnMeritos}]  minMerito:${minMerito}  min:${columns[columnMeritos.indexOf(minMerito)]}`);
-
-        // Parameters for algorithm
-        var cSelectedColumn = { index: columnMeritos.indexOf(minMerito), name: columns[columnMeritos.indexOf(minMerito)] };
-
-        if(cSelectedColumn.name == undefined){
-            // Final decision level
-            let txt = `${tValues}`;
-            this.tree.push({ "id" : this.id++, "parent" : parent, "text" : txt.length > 0 ? txt : '?', 'icon' : 'glyphicon glyphicon-leaf'  });
-            return;
-        }
-        
-        // Iterate every value of the selected column
-        let columnValues = Object.getOwnPropertyNames(tHeaders[cSelectedColumn.name].values);
-
-        // Check if for every values it has already a solution
-        let dscValues = {};
-        decisionValues.forEach(function(v){
-            dscValues[v] = 0;
-        });
-
-        for (const value in columnValues) {
-            let currDescValues = tHeaders[cSelectedColumn.name].values[value].decisionValues;
-            for(let dscValue in currDescValues){
-                dscValues[dscValue] += currDescValues[dscValue].count;
+            for (let i = 0; i < columns.length - 1; i++) {
+                // const tHeader = columns[i];
+                // console.log(`Calc merito of the column: ${columns[i]}`);
+                columnMeritos.push(this.merito(tHeaders[columns[i]], decisionValues));
             }
-        }
 
-        let allValuesWithSameDesicionValue = true, descValue = null;
-        for(let v in dscValues){
-            if(!descValue) descValue = v;
-            if(dscValues[v] > 0 && descValue != v) allValuesWithSameDesicionValue = false;
-        }
-        if(allValuesWithSameDesicionValue){
-            // Final decision level
-            let txt = `${descValue}`;
-            this.tree.push({ "id" : this.id++, "parent" : parent, "text" : txt.length > 0 ? txt : '?', 'icon' : 'glyphicon glyphicon-leaf'  });
-            return;
-        }
+            let minMerito = columnMeritos.length > 0 ? columnMeritos.reduce((ac, v, v_i) => v < ac ? v : ac) : columnMeritos;
+            // Devuelvo la columna de menor merito        
+            console.log(`columnMeritos:[${columnMeritos}]  minMerito:${minMerito}  min:${columns[columnMeritos.indexOf(minMerito)]}`);
 
-        let id = this.id++;
-        // Add to the tree
-        this.tree.push({ "id" : id, "parent" : parent, "text" : cSelectedColumn.name, "icon" : "http://jstree.com/tree.png" });
+            // Parameters for algorithm
+            var cSelectedColumn = { index: columnMeritos.indexOf(minMerito), name: columns[columnMeritos.indexOf(minMerito)] };
 
-        for (let i = 0; i < columnValues.length; i++) {
-            const value = columnValues[i];
+            if (cSelectedColumn.name == undefined) {
+                // Final decision level
+                let txt = `${tValues}`;
+                this.tree.push({ "id": this.id++, "parent": parent, "text": txt.length > 0 ? txt : '?', 'icon': 'glyphicon glyphicon-leaf' });
+                return;
+            }
 
+            // Check if for every values it has already a solution
+            let dscValues = {};
+            decisionValues.forEach(function (v) {
+                dscValues[v] = 0;
+            });
+
+            console.log(`cSelectedColumn: ${JSON.stringify(cSelectedColumn)}`);
+
+            for (const value in tHeaders[cSelectedColumn.name].values) {
+                console.log(value);
+                let currDescValues = tHeaders[cSelectedColumn.name].values[value].decisionValues;
+                for (let dscValue in currDescValues) {
+                    dscValues[dscValue] += currDescValues[dscValue].count;
+                }
+            }
+
+            let allValuesWithSameDesicionValue = true, descValue = null;
+            for (let v in dscValues) {
+                if (!descValue) descValue = v;
+                if (dscValues[v] > 0 && descValue != v) allValuesWithSameDesicionValue = false;
+            }
+            if (allValuesWithSameDesicionValue) {
+                console.log(`All values contains the same desicion value: ${descValue}`);
+
+                // Final decision level
+                let txt = `${descValue}`;
+                this.tree.push({ "id": this.id++, "parent": parent, "text": txt.length > 0 ? txt : '?', 'icon': 'glyphicon glyphicon-leaf' });
+                return;
+            }
+
+            let id = this.id++;
             // Add to the tree
-            let vId = this.id++;
-            this.tree.push({ "id" : vId, "parent" : id, "text" : `${cSelectedColumn.name} = ${value}` });
-            
-            let tNextHeaders = this._restoreHeader(tHeaders, cSelectedColumn.name);
-            columns = Object.getOwnPropertyNames(tNextHeaders);
+            this.tree.push({ "id": id, "parent": parent, "text": cSelectedColumn.name, "icon": "http://jstree.com/tree.png" });
 
-            // Prepare for the recursive call
-            let tNextValues = tValues.filter(function (v) {
-                return v[cSelectedColumn.index] == value;
-            }).map(function (v, ind, arr) {
-                let r = v.slice(0, cSelectedColumn.index).concat(v.slice(cSelectedColumn.index + 1, v.length));    
-                return r;
-            }.bind(this));
-            this._countHeaders(tNextValues, tNextHeaders, columns);
-            
-            console.log(tNextHeaders);
-            console.log(tNextValues);
-            this.algorithm(tNextValues, tNextHeaders, vId);
+            for (const value in tHeaders[cSelectedColumn.name].values) {
+
+                // Add to the tree
+                let vId = this.id++;
+                this.tree.push({ "id": vId, "parent": id, "text": `${cSelectedColumn.name} = ${value}` });
+
+                let tNextHeaders = this._restoreHeader(tHeaders, cSelectedColumn.name);
+                columns = Object.getOwnPropertyNames(tNextHeaders);
+
+                // Prepare for the recursive call
+                let tNextValues = tValues.filter(function (v) {
+                    return v[cSelectedColumn.index] == value;
+                }).map(function (v, ind, arr) {
+                    let r = v.slice(0, cSelectedColumn.index).concat(v.slice(cSelectedColumn.index + 1, v.length));
+                    return r;
+                }.bind(this));
+                this._countHeaders(tNextValues, tNextHeaders, columns);
+
+                console.log(`-------------------- NEXT ITERATION ----------- `);
+                console.log(`tNextHeaders:`);
+                console.log(tNextHeaders);
+                console.log(`tNextValues:`);
+                console.log(tNextValues);
+                this.algorithm(tNextValues, tNextHeaders, vId);
+            }
+        } catch (e) {
+            console.warn('Current tHeaders:');
+            console.warn(tHeaders);
+            console.warn('Current tValues');
+            console.warn(tValues);
+            throw e;
         }
     }
 
@@ -151,8 +164,8 @@ class ID3 {
         return tNextHeaders;
     }
 
-    _countHeaders(tValues, tHeaders, columns){
-        tValues.forEach(function(row, rInd){
+    _countHeaders(tValues, tHeaders, columns) {
+        tValues.forEach(function (row, rInd) {
             row.forEach(function (val, cInd) {
                 // console.log(tHeaders[columns[cInd]]);
                 // console.log(val);
